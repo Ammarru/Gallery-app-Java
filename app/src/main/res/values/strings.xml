@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Gallery app Java</string>
+    <string-array name="Tools_Name">
+        <item>Rotate</item>
+        <item>Filter</item>
+        <item>Scale</item>
+        <item>Retouch</item>
+        <item>Segment</item>
+        <item>Mask</item>
+        <item>3D</item>
+    </string-array>
+</resources>

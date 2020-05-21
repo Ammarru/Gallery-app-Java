@@ -1,0 +1,2 @@
+rootProject.name='Gallery app Java'
+include ':app'
