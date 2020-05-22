@@ -1,7 +1,7 @@
 package com.example.galleryappjava.ImageEdit;
 
 import android.graphics.Bitmap;
-
+//
 public class Rotate{
     public static Bitmap rotate(Bitmap img, double degrees) {
         int width = img.getWidth();
