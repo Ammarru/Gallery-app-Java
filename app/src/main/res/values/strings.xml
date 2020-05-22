@@ -9,4 +9,9 @@
         <item>Mask</item>
         <item>3D</item>
     </string-array>
+    <string-array name="Filter_Name">
+        <item>Black&amp;White</item>
+        <item>Blue</item>
+        <item>Red</item>
+    </string-array>
 </resources>

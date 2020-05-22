@@ -1,5 +1,7 @@
 package com.example.galleryappjava.ImageEdit;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -29,7 +31,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
             R.drawable.ic_retouch,R.drawable.ic_mask,R.drawable.ic_3d};
 
     ImageView  mainImageView;
-    File imagePos;
+    File image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
 
     private void getData(){
         if (getIntent().hasExtra("myImage") ){
-            imagePos = Constant.allMediaList.get(getIntent().getIntExtra("myImage",1));
+            image = Constant.allMediaList.get(getIntent().getIntExtra("myImage",1));
             setData();
         }
     }
@@ -58,7 +60,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
     private void setData() {
 
         Glide.with(this)
-                .load(imagePos)
+                .load(image)
                 .into(mainImageView);
     }
 
@@ -66,7 +68,14 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
     public void onItemClick(int position) {
         switch (position){
             case 0:
-            RotatePic();
+                RotatePic();
+                break;
+            case 1:
+                Intent intent = new Intent(this, FilterActivity.class);
+                intent.putExtra("Image",image);
+                startActivity(intent);
+                break;
+
         }
     }
 

@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.galleryappjava">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,22 +9,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ImageEdit.SecondActivity"
-            android:parentActivityName=".Base.BaseActivity"
-            android:label="ImageEdit"/>
-        <activity android:name=".Base.BaseActivity">
-        </activity>
+
         <activity
-            android:theme="@style/SplashTheme"
-            android:name=".Storage.SplashScreen">
+            android:name=".ImageEdit.FilterActivity"
+            android:parentActivityName=".ImageEdit.SecondActivity"/>
+
+        <activity
+            android:name=".ImageEdit.SecondActivity"
+            android:label="ImageEdit"
+            android:parentActivityName=".Base.BaseActivity" />
+
+        <activity android:name=".Base.BaseActivity"/>
+
+        <activity
+            android:name=".Storage.SplashScreen"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-
-            </activity>
+        </activity>
     </application>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

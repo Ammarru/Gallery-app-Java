@@ -64,10 +64,8 @@ public class BaseActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1){
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                //load data here
                 //for first time data will be loaded here
                 //then it will be loaded in splash screen
-                //because if we could not have permission then we could not load data in splash screen window
                 storagePaths = StorageUtil.getStorageDirectories(this);
 
                 for (String path : storagePaths) {
