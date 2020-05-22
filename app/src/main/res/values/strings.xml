@@ -4,8 +4,8 @@
         <item>Rotate</item>
         <item>Filter</item>
         <item>Scale</item>
-        <item>Retouch</item>
         <item>Segment</item>
+        <item>Retouch</item>
         <item>Mask</item>
         <item>3D</item>
     </string-array>
