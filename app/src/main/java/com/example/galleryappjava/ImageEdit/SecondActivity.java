@@ -29,7 +29,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
     String s[];
     int images[]={R.drawable.ic_rotate,R.drawable.ic_filter,R.drawable.ic_scale,R.drawable.ic_segment,
             R.drawable.ic_retouch,R.drawable.ic_mask,R.drawable.ic_3d};
-
+    int pos;
     ImageView  mainImageView;
     File image;
     @Override
@@ -51,6 +51,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
 
     private void getData(){
         if (getIntent().hasExtra("myImage") ){
+            pos= getIntent().getIntExtra("myImage",1);
             image = Constant.allMediaList.get(getIntent().getIntExtra("myImage",1));
             setData();
         }
@@ -72,7 +73,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                 break;
             case 1:
                 Intent intent = new Intent(this, FilterActivity.class);
-                intent.putExtra("Image",image);
+                intent.putExtra("Image",pos);
                 startActivity(intent);
                 break;
 
