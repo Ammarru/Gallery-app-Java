@@ -11,13 +11,10 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ImageEdit.FilterActivity"
-            android:parentActivityName=".ImageEdit.SecondActivity"/>
+            android:name=".ImageEdit.FilterActivity" />
 
         <activity
-            android:name=".ImageEdit.SecondActivity"
-            android:label="ImageEdit"
-            android:parentActivityName=".Base.BaseActivity" />
+            android:name=".ImageEdit.SecondActivity" />
 
         <activity android:name=".Base.BaseActivity"/>
 
