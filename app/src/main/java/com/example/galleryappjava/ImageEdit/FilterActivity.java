@@ -3,9 +3,12 @@ package com.example.galleryappjava.ImageEdit;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +27,7 @@ public class FilterActivity extends AppCompatActivity implements RecyclerViewCli
     int images[]={R.drawable.ic_filter,R.drawable.ic_filter,R.drawable.ic_filter};
     ImageView mainImageView;
     File img;
-
+    ImageView saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,20 +36,28 @@ public class FilterActivity extends AppCompatActivity implements RecyclerViewCli
 
         recyclerView= findViewById(R.id.Filter_imgs);
         mainImageView= findViewById(R.id.photoFilterView);
+        saveButton = findViewById(R.id.imgSave);
         s=getResources().getStringArray(R.array.Filter_Name);
-
         FiltersAdapter filtersAdapter = new FiltersAdapter(this, s, images,this);
         recyclerView.setAdapter(filtersAdapter);
 
-
         getData();
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
 
     }
 
 
    private void getData(){
         if (getIntent().hasExtra("Image") ){
-            img = Constant.allMediaList.get(getIntent().getIntExtra("Image",1));
+            img = (File)getIntent().getSerializableExtra("Image");
             setData();
         }
     }
@@ -96,4 +107,6 @@ public class FilterActivity extends AppCompatActivity implements RecyclerViewCli
         Bitmap bitmap = drawable.getBitmap();
         mainImageView.setImageBitmap(BlackWhiteFilter.ConvertBlackWhite(bitmap));
     }
+
+
 }

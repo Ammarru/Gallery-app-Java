@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.example.galleryappjava.R;
 import com.example.galleryappjava.Storage.Constant;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -32,12 +34,14 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
     int pos;
     ImageView  mainImageView;
     File image;
+    ImageView saveButton;
+    FileOutputStream outStream = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_image);
 
-
+        saveButton = findViewById(R.id.imgSave);
         recyclerView=findViewById(R.id.rvConstraintTools);
         mainImageView = findViewById(R.id.photoEditorView);
         s=getResources().getStringArray(R.array.Tools_Name);
@@ -46,6 +50,13 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         recyclerView.setAdapter(toolsAdapter);
 
         getData();
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
 
@@ -73,7 +84,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                 break;
             case 1:
                 Intent intent = new Intent(this, FilterActivity.class);
-                intent.putExtra("Image",pos);
+                intent.putExtra("Image",image);
                 startActivity(intent);
                 break;
 
