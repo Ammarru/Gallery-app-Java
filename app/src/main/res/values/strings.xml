@@ -13,5 +13,7 @@
         <item>Black&amp;White</item>
         <item>Blue</item>
         <item>Red</item>
+        <item>Negative</item>
+        <item>Sepia</item>
     </string-array>
 </resources>

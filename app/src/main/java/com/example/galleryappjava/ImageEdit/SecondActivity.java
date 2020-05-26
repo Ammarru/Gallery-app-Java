@@ -1,5 +1,6 @@
 package com.example.galleryappjava.ImageEdit;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import com.example.galleryappjava.Storage.Constant;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,17 +66,18 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         if (getIntent().hasExtra("myImage") ){
             pos= getIntent().getIntExtra("myImage",1);
             image = Constant.allMediaList.get(getIntent().getIntExtra("myImage",1));
-            setData();
+            setData(image);
         }
     }
 
 
-    private void setData() {
+    private void setData(File image) {
 
         Glide.with(this)
                 .load(image)
                 .into(mainImageView);
     }
+
 
     @Override
     public void onItemClick(int position) {
@@ -85,9 +88,23 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
             case 1:
                 Intent intent = new Intent(this, FilterActivity.class);
                 intent.putExtra("Image",image);
-                startActivity(intent);
+                startActivityForResult(intent,1);
                 break;
 
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == Activity.RESULT_OK){
+                String uriString = data.getStringExtra("Image");
+                Uri uri = Uri.parse(uriString);
+                File resultImage = new File(uri.getPath());
+                setData(resultImage);
+            }
         }
     }
 
