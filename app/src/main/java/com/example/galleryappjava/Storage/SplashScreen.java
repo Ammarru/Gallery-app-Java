@@ -22,12 +22,13 @@ public class SplashScreen extends AppCompatActivity {
 
         // loading date here
 
-        storagePaths = StorageUtil.getStorageDirectories(this);
+       storagePaths = StorageUtil.getStorageDirectories(this);
 
         for (String path: storagePaths){
             storage = new File(path);
             Method.load_Directory_Files(storage);
         }
+
 
         Intent intent = new Intent(SplashScreen.this, BaseActivity.class);
         startActivity(intent);

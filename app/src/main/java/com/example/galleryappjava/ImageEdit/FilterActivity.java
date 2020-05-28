@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,16 +18,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.galleryappjava.Adapters.FiltersAdapter;
 import com.example.galleryappjava.Adapters.RecyclerViewClickInterface;
-import com.example.galleryappjava.Adapters.ToolsAdapter;
 import com.example.galleryappjava.R;
-import com.example.galleryappjava.Storage.Constant;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -133,11 +128,11 @@ public class FilterActivity extends AppCompatActivity implements RecyclerViewCli
         }
     }
 
-    public String getImageUri(Context inContext, Bitmap inImage) {
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return path;
+        return Uri.parse(path);
     }
 
    private void getData(){
@@ -214,6 +209,8 @@ public class FilterActivity extends AppCompatActivity implements RecyclerViewCli
         Bitmap bitmap = drawable.getBitmap();
         mainImageView.setImageBitmap(SepiaFilter.FilterSepia(bitmap));
     }
+
+
 
 
 }

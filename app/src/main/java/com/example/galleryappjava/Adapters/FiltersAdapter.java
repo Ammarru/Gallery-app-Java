@@ -22,11 +22,11 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.MyViewHo
     int images[];
     Context context;
     RecyclerViewClickInterface recyclerViewClickInterface;
-    public FiltersAdapter(Context ct, String titles[], int tools[],RecyclerViewClickInterface recyclerViewClickInterface){
+    public FiltersAdapter(Context ct, String titles[], int tools[],RecyclerViewClickInterface filterRecyclerViewClickInterface){
         context = ct;
         data = titles;
         images = tools;
-        this.recyclerViewClickInterface = recyclerViewClickInterface;
+        this.recyclerViewClickInterface = filterRecyclerViewClickInterface;
     }
 
     @NonNull
