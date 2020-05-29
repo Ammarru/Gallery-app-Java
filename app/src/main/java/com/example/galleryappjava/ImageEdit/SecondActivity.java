@@ -310,6 +310,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
     private void setData(File image) {
 
         Glide.with(this)
+                .asBitmap()
                 .load(image)
                 .into(mainImageView);
     }
