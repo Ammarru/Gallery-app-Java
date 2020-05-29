@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +22,9 @@ import com.example.galleryappjava.Storage.Constant;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Random;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,35 +52,23 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
     int pos;
     ImageView  mainImageView;
     File image;
-    File resultImage=null;
     ImageView saveButton;
     ImageView clearButton;
+    File resultImage = null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_image);
 
-        saveButton = findViewById(R.id.imgSave);
-        recyclerView=findViewById(R.id.rvConstraintTools);
-        filterRecyclerView = findViewById(R.id.filterTools);
-        mainImageView = findViewById(R.id.photoEditorView);
-        clearButton = findViewById(R.id.imgClose);
-        s=getResources().getStringArray(R.array.Tools_Name);
-        s2=getResources().getStringArray(R.array.Filter_Name);
+        initialize();
 
-        ToolsAdapter toolsAdapter = new ToolsAdapter(this, s, images,this);
-        recyclerView.setAdapter(toolsAdapter);
-
-        FiltersAdapter filtersAdapter = new FiltersAdapter(this, s2, filterImages,this);
-        filterRecyclerView.setAdapter(filtersAdapter);
-
-
-
-        getData();
-
+        //Save Button Functionality
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Inside The Filter View
                 if(filterRecyclerView.getVisibility()==View.VISIBLE){
                     new AlertDialog.Builder(SecondActivity.this)
                             .setTitle("Save")
@@ -84,11 +76,8 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-                                    Bitmap bitmap = drawable.getBitmap();
-                                    Uri uri = getImageUri(SecondActivity.this,bitmap);
-                                    resultImage = image;
-                                    resultImage = new File(uri.getPath());
+
+
                                     filterRecyclerView.setVisibility(View.INVISIBLE);
                                     recyclerView.setVisibility(View.VISIBLE);
                                 }
@@ -102,6 +91,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .create().show();
 
                 }
+                //Inside the Tools View
                 else{
                     new AlertDialog.Builder(SecondActivity.this)
                             .setTitle("Save")
@@ -111,10 +101,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                                 public void onClick(DialogInterface dialog, int which) {
                                     BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
                                     Bitmap bitmap = drawable.getBitmap();
-                                    getImageUri(SecondActivity.this,bitmap);
-                                    Uri uri = getImageUri(SecondActivity.this,bitmap);
-                                    resultImage = image;
-                                    resultImage = new File(uri.getPath());
+                                    save(bitmap);
                                     finish();
                                 }
                             })
@@ -130,9 +117,11 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
             }
         });
 
+        //Close Button Functionality
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Inside the Filters View
                 if(filterRecyclerView.getVisibility() == View.VISIBLE){
                     new AlertDialog.Builder(SecondActivity.this)
                             .setTitle("Clear")
@@ -140,7 +129,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Glide.with(SecondActivity.this).load(resultImage).into(mainImageView);
+                                    Glide.with(SecondActivity.this).load(image).into(mainImageView);
                                     filterRecyclerView.setVisibility(View.INVISIBLE);
                                     recyclerView.setVisibility(View.VISIBLE);
                                 }
@@ -153,6 +142,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             })
                             .create().show();
                 }
+                //Inside the Tools View
                 else{
                     new AlertDialog.Builder(SecondActivity.this)
                             .setTitle("Cancel")
@@ -160,7 +150,6 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    resultImage = null;
                                     finish();
                                 }
                             })
@@ -177,34 +166,16 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
 
     }
 
-    private void getData(){
-        if (getIntent().hasExtra("myImage") ){
-            pos= getIntent().getIntExtra("myImage",1);
-            image = Constant.allMediaList.get(getIntent().getIntExtra("myImage",1));
-            setData(image);
-        }
-    }
 
-
-    private void setData(File image) {
-
-        Glide.with(this)
-                .load(image)
-                .into(mainImageView);
-    }
-
-
+    //Main Functionality
     @Override
     public void onItemClick(int position) {
+        //Edit Tools
         if(filterRecyclerView.getVisibility() == View.INVISIBLE) {
             switch (position) {
                 case 0:
                     RotatePic();
-                    BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-                    Bitmap bitmap = drawable.getBitmap();
-                    Uri uri = getImageUri(this,bitmap);
-                    resultImage = image;
-                    resultImage = new File(uri.getPath());
+
                     break;
                 case 1:
                     recyclerView.setVisibility(View.GONE);
@@ -213,12 +184,14 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
 
             }
         }
+        //Filters
         else{
             switch (position){
                 case 0:
                     Glide.with(this).load(image).into(mainImageView);
                     FilterBlackWhite();
                     break;
+
                 case 1:
                     Glide.with(this).load(image).into(mainImageView);
                     FilterBlue();
@@ -283,6 +256,64 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         Bitmap bitmap = drawable.getBitmap();
         mainImageView.setImageBitmap(SepiaFilter.FilterSepia(bitmap));
     }
+
+    //Building the Ui
+    private void initialize() {
+        saveButton = findViewById(R.id.imgSave);
+        recyclerView=findViewById(R.id.rvConstraintTools);
+        filterRecyclerView = findViewById(R.id.filterTools);
+        mainImageView = findViewById(R.id.photoEditorView);
+        clearButton = findViewById(R.id.imgClose);
+        s=getResources().getStringArray(R.array.Tools_Name);
+        s2=getResources().getStringArray(R.array.Filter_Name);
+
+        ToolsAdapter toolsAdapter = new ToolsAdapter(this, s, images,this);
+        recyclerView.setAdapter(toolsAdapter);
+
+        FiltersAdapter filtersAdapter = new FiltersAdapter(this, s2, filterImages,this);
+        filterRecyclerView.setAdapter(filtersAdapter);
+
+        getData();
+    }
+
+
+    private void save(Bitmap finalBitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-"+ n +".jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getData(){
+        if (getIntent().hasExtra("myImage") ){
+            pos= getIntent().getIntExtra("myImage",1);
+            image = Constant.allMediaList.get(getIntent().getIntExtra("myImage",1));
+            setData(image);
+        }
+    }
+
+
+    private void setData(File image) {
+
+        Glide.with(this)
+                .load(image)
+                .into(mainImageView);
+    }
+
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
