@@ -27,6 +27,9 @@ import com.example.galleryappjava.Storage.Method;
 import com.example.galleryappjava.Storage.StorageUtil;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -132,9 +135,28 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected void onResume() {
+        super.onResume();
 
+        Constant.allMediaList.clear();;
+        storagePaths = StorageUtil.getStorageDirectories(this);
+
+        for (String path : storagePaths) {
+            storage = new File(path);
+            Method.load_Directory_Files(storage);
+        }
+
+
+
+        Constant.allMediaList.sort( new Comparator<File>(){
+            public int compare(File f1, File f2)
+            {
+                return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+            } });
+        Collections.reverse(Constant.allMediaList);
+
+        gridAdapter.notifyDataSetChanged();
     }
 }

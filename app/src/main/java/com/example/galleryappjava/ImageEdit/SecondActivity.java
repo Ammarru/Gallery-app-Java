@@ -1,16 +1,11 @@
 package com.example.galleryappjava.ImageEdit;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
@@ -19,13 +14,9 @@ import com.example.galleryappjava.Adapters.RecyclerViewClickInterface;
 import com.example.galleryappjava.Adapters.ToolsAdapter;
 import com.example.galleryappjava.R;
 import com.example.galleryappjava.Storage.Constant;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Random;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,8 +45,8 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
     File image;
     ImageView saveButton;
     ImageView clearButton;
-    File resultImage = null;
-
+    Bitmap undo;
+    Bitmap result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +54,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         setContentView(R.layout.edit_image);
 
         initialize();
+
 
         //Save Button Functionality
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -76,8 +68,6 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-
-
                                     filterRecyclerView.setVisibility(View.INVISIBLE);
                                     recyclerView.setVisibility(View.VISIBLE);
                                 }
@@ -99,9 +89,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-                                    Bitmap bitmap = drawable.getBitmap();
-                                    save(bitmap);
+                                    save(result);
                                     finish();
                                 }
                             })
@@ -129,7 +117,11 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Glide.with(SecondActivity.this).load(image).into(mainImageView);
+                                    if (result!=null)
+                                        mainImageView.setImageBitmap(undo);
+                                    else
+                                        Glide.with(SecondActivity.this).load(image).into(mainImageView);
+                                    result=undo;
                                     filterRecyclerView.setVisibility(View.INVISIBLE);
                                     recyclerView.setVisibility(View.VISIBLE);
                                 }
@@ -150,6 +142,8 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    result=null;
+                                    undo= null;
                                     finish();
                                 }
                             })
@@ -188,24 +182,39 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         else{
             switch (position){
                 case 0:
-                    Glide.with(this).load(image).into(mainImageView);
+                    if (result!=null)
+                        mainImageView.setImageBitmap(undo);
+                    else
+                        Glide.with(this).load(image).into(mainImageView);
                     FilterBlackWhite();
                     break;
 
                 case 1:
-                    Glide.with(this).load(image).into(mainImageView);
+                    if (result!=null)
+                        mainImageView.setImageBitmap(undo);
+                    else
+                        Glide.with(this).load(image).into(mainImageView);
                     FilterBlue();
                     break;
                 case 2:
-                    Glide.with(this).load(image).into(mainImageView);
+                    if (result!=null)
+                        mainImageView.setImageBitmap(undo);
+                    else
+                        Glide.with(this).load(image).into(mainImageView);
                     FilterRed();
                     break;
                 case 3:
-                    Glide.with(this).load(image).into(mainImageView);
+                    if (result!=null)
+                        mainImageView.setImageBitmap(undo);
+                    else
+                        Glide.with(this).load(image).into(mainImageView);
                     FilterNegative();
                     break;
                 case 4:
-                    Glide.with(this).load(image).into(mainImageView);
+                    if (result!=null)
+                        mainImageView.setImageBitmap(undo);
+                    else
+                        Glide.with(this).load(image).into(mainImageView);
                     FilterSepia();
                     break;
             }
@@ -217,44 +226,103 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
 
     public void RotatePic(){
         mainImageView.invalidate();
-        BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        mainImageView.setImageBitmap(Rotate.rotate(bitmap,90));
+        if (result!=null){
+            undo = result;
+            Bitmap bitmap = result;
+            mainImageView.setImageBitmap(Rotate.rotate(bitmap,90));
+            result = Rotate.rotate(bitmap,90);
+        }
+        else {
+            BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+            mainImageView.setImageBitmap(Rotate.rotate(bitmap,90));
+            result = Rotate.rotate(bitmap,90);
+        }
+
     }
 
     public void FilterRed(){
         mainImageView.invalidate();
-        BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        mainImageView.setImageBitmap(Filter.doColorFilter(bitmap,1,0,0));
+        if (result!=null){
+            undo = result;
+            Bitmap bitmap = result;
+            mainImageView.setImageBitmap(Filter.doColorFilter(bitmap,1,0,0));
+            result = Filter.doColorFilter(bitmap,1,0,0);
+        }
+        else {
+            BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+            mainImageView.setImageBitmap(Filter.doColorFilter(bitmap,1,0,0));
+            result = Filter.doColorFilter(bitmap,1,0,0);
+        }
+
     }
 
     public void FilterBlue(){
         mainImageView.invalidate();
-        BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        mainImageView.setImageBitmap(Filter.doColorFilter(bitmap,0,0,1));
+        if (result!=null){
+            undo = result;
+            Bitmap bitmap = result;
+            mainImageView.setImageBitmap(Filter.doColorFilter(bitmap,0,0,1));
+            result = Filter.doColorFilter(bitmap,0,0,1);
+        }
+        else {
+            BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+            mainImageView.setImageBitmap(Filter.doColorFilter(bitmap,0,0,1));
+            result = Filter.doColorFilter(bitmap,0,0,1);
+        }
     }
 
     public void FilterBlackWhite(){
         mainImageView.invalidate();
-        BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        mainImageView.setImageBitmap(BlackWhiteFilter.ConvertBlackWhite(bitmap));
+        if (result!=null){
+            undo = result;
+            Bitmap bitmap = result;
+            mainImageView.setImageBitmap(BlackWhiteFilter.ConvertBlackWhite(bitmap));
+            result = BlackWhiteFilter.ConvertBlackWhite(bitmap);
+        }
+        else {
+            BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+            mainImageView.setImageBitmap(BlackWhiteFilter.ConvertBlackWhite(bitmap));
+            result = BlackWhiteFilter.ConvertBlackWhite(bitmap);
+        }
+
     }
 
     public void FilterNegative(){
         mainImageView.invalidate();
-        BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        mainImageView.setImageBitmap(NegativeFilter.ConvertNegative(bitmap));
+        if (result!=null){
+            undo = result;
+            Bitmap bitmap = result;
+            mainImageView.setImageBitmap(NegativeFilter.ConvertNegative(bitmap));
+            result = NegativeFilter.ConvertNegative(bitmap);
+        }
+        else {
+            BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+            mainImageView.setImageBitmap(NegativeFilter.ConvertNegative(bitmap));
+            result = NegativeFilter.ConvertNegative(bitmap);
+        }
+
     }
 
     public void FilterSepia(){
         mainImageView.invalidate();
-        BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        mainImageView.setImageBitmap(SepiaFilter.FilterSepia(bitmap));
+        if (result!=null){
+            undo = result;
+            Bitmap bitmap = result;
+            mainImageView.setImageBitmap(SepiaFilter.FilterSepia(bitmap));
+            result = (SepiaFilter.FilterSepia(bitmap));
+        }
+        else {
+            BitmapDrawable drawable = (BitmapDrawable) mainImageView.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+            mainImageView.setImageBitmap(SepiaFilter.FilterSepia(bitmap));
+            result = (SepiaFilter.FilterSepia(bitmap));
+        }
+
     }
 
     //Building the Ui
@@ -274,6 +342,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         filterRecyclerView.setAdapter(filtersAdapter);
 
         getData();
+
     }
 
 
@@ -288,6 +357,7 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         File file = new File (myDir, fname);
         if (file.exists ()) file.delete ();
         try {
+            file.createNewFile();
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
             out.flush();
@@ -302,25 +372,62 @@ public class SecondActivity extends AppCompatActivity implements RecyclerViewCli
         if (getIntent().hasExtra("myImage") ){
             pos= getIntent().getIntExtra("myImage",1);
             image = Constant.allMediaList.get(getIntent().getIntExtra("myImage",1));
-            setData(image);
+            setData();
         }
     }
 
 
-    private void setData(File image) {
+    private void setData() {
 
         Glide.with(this)
-                .asBitmap()
                 .load(image)
                 .into(mainImageView);
     }
 
+    @Override
+    public void onBackPressed() {
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
+        if(filterRecyclerView.getVisibility() == View.VISIBLE){
+            new AlertDialog.Builder(SecondActivity.this)
+                    .setTitle("Clear")
+                    .setMessage("Applied Filter will be cleared.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Glide.with(SecondActivity.this).load(image).into(mainImageView);
+                            result=undo;
+                            filterRecyclerView.setVisibility(View.INVISIBLE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        }
+        //Inside the Tools View
+        else{
+            new AlertDialog.Builder(SecondActivity.this)
+                    .setTitle("Cancel")
+                    .setMessage("All adjustments will be deleted!")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            result=null;
+                            undo= null;
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        }
     }
-
 }
