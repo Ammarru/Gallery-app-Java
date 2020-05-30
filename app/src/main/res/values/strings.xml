@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gallery app Java</string>
+    <string name="app_name">Image Editor</string>
     <string-array name="Tools_Name">
         <item>Rotate</item>
         <item>Filter</item>
